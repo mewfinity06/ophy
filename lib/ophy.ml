@@ -4,7 +4,7 @@ module Point = struct
     ; y : float
     }
 
-  let distance (p1 : t) (p2 : t) =
+  let distance p1 p2 =
     let dist_x = p1.x -. p2.x in
     let dist_y = p1.y -. p2.y in
     sqrt ((dist_x *. dist_x) +. (dist_y *. dist_y))
@@ -16,6 +16,10 @@ module Circle = struct
     { pos : Point.t
     ; radius : float
     }
+
+  let area c = Float.pi *. (c.radius ** 2.)
+  let diameter c = 2. *. c.radius
+  let circumference c = 2. *. Float.pi *. c.radius
 end
 
 module Rect = struct
@@ -24,6 +28,11 @@ module Rect = struct
     ; width : float
     ; height : float
     }
+
+  let square p s = { pos = p; width = s; height = s }
+  let area r = r.width *. r.height
+  let perimeter r = 2. *. (r.width +. r.height)
+  let diagonal r = sqrt ((r.width ** 2.) +. (r.height ** 2.))
 end
 
 module Line = struct
@@ -31,6 +40,8 @@ module Line = struct
     { p1 : Point.t
     ; p2 : Point.t
     }
+
+  let slope t = (t.p2.y -. t.p1.y) /. (t.p2.x -. t.p1.x)
 end
 
 (** 
@@ -54,7 +65,7 @@ module Collide = struct
     let open Rect in
     let { x = px; y = py } = p1 in
     let { pos = rp; width = rw; height = rh } = r1 in
-    px >= rp.x && rp.x <= rp.x +. rw && py >= rp.y && py <= rp.y +. rh
+    px >= rp.x && px <= rp.x +. rw && py >= rp.y && py <= rp.y +. rh
   ;;
 
   let r2r (r1 : Rect.t) (r2 : Rect.t) =
@@ -65,18 +76,22 @@ module Collide = struct
   ;;
 
   let c2r (c : Circle.t) (r : Rect.t) =
-    let test_x = ref 0.0 in
-    let test_y = ref 0.0 in
-    if c.pos.x < r.pos.x
-    then test_x := r.pos.x
-    else if c.pos.x > r.pos.x +. r.width
-    then test_x := r.pos.x +. r.width;
-    if c.pos.y < r.pos.y
-    then test_y := r.pos.y
-    else if c.pos.y > r.pos.y +. r.height
-    then test_y := r.pos.y +. r.height;
-    let dist_x = c.pos.x -. !test_x in
-    let dist_y = c.pos.y -. !test_y in
+    let test_x =
+      if c.pos.x < r.pos.x
+      then r.pos.x
+      else if c.pos.x > r.pos.x +. r.width
+      then r.pos.x +. r.width
+      else c.pos.x
+    in
+    let test_y =
+      if c.pos.y < r.pos.y
+      then r.pos.y
+      else if c.pos.y > r.pos.y +. r.height
+      then r.pos.y +. r.height
+      else c.pos.y
+    in
+    let dist_x = c.pos.x -. test_x in
+    let dist_y = c.pos.y -. test_y in
     let dist = sqrt ((dist_x *. dist_x) +. (dist_y *. dist_y)) in
     dist <= c.radius
   ;;
