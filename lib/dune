@@ -1,0 +1,5 @@
+(library
+ (public_name ophy)
+ (name ophy)
+ (inline_tests)
+ (preprocess (pps ppx_inline_test)))
