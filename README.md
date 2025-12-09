@@ -2,6 +2,10 @@
 
 Ophy is a physics library written in OCaml, providing modules for geometric primitives (Point, Circle, Rectangle, Line) and collision detection functionalities. The collision detection module `Collide` takes inspiration from Jeffrey Thompson's work on Collision Detection.
 
+## TODO
+
+- Write my own README.md
+
 ## Features
 
 -   **Point**: Represents a 2D point with utility functions like distance calculation.
@@ -41,6 +45,8 @@ This will compile the `ophy` library.
 ## Running Tests
 
 Ophy uses `dune` for running tests, including inline tests.
+
+Written with Gemini
 
 To run all tests:
 
